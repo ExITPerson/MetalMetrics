@@ -1,0 +1,19 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD_FILE: /run/secrets/clickhouse_password
+    volumes:
+      - ch_data:/var/lib/clickhouse
+    secrets:
+      - clickhouse_password
+volumes:
+  ch_data:
+
+secrets:
+  clickhouse_password:
+    file: ./secrets/clickhouse_password.txt
