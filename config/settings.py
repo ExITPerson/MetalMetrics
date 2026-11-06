@@ -1,6 +1,7 @@
 import json
 import os
 from dotenv import load_dotenv
+from pydantic import Field
 
 load_dotenv()
 
@@ -17,6 +18,9 @@ COMPANY_TABLE_COLUMNS = {}
 # --- CHK ---
 API_URL = os.getenv('API_URL')
 TOKEN = os.getenv('TOKEN')
+CHK_PROXIES_RAW: str = Field(default='', alias='CHK_PROXIES')
+CHK_SEARCH_URL=os.getenv('CHK_SEARCH_URL')
+CHK_COMPANY_URL=os.getenv('CHK_COMPANY_URL')
 
 # --- Регионы ---
 with open('data/region.json', 'r', encoding='utf-8') as f:
