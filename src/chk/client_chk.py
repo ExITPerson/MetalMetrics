@@ -1,21 +1,24 @@
+from itertools import chain
+
 import requests
 from cypher_cell import CypherCell
-from config.settings import OKVED_PRIORITY_MAP, REGIONS_DICT, TOKEN, API_URL
+from config.settings import OKVED_PRIORITY_MAP, REGIONS_DICT, TOKEN, API_URL, OKVED_NOT_CLIENTS, OKVED_COLD_CLIENTS, \
+    OKVED_WARM_CLIENTS
 
-okveds = [
-    '25.1', '25.5', '25.2', '25.4', '25.6', '25.9', '25.12', '25.30.2', '25.50.1',
-    '25.21.1', '25.29', '25.61', '25.94', '25.99', '25.99.2', '25.99.21', '25.99.22',
-    '25.99.29', '25.11', '24.3', '24.33', '28.25', '28.25.1', '28.25.2', '28.41',
-    '28.41.2', '28.49', '28.49.1', '28.49.12', '28.49.11', '29.10.5', '29.10.3',
-    '29.20.2', '29.20.4', '29.20.5', '28.41.1', '25.99.24', '25.50.2', '29.2',
-]
 
 class ClientCHK:
 
     def __init__(self):
         self._token = CypherCell(TOKEN.encode())
         self.url = API_URL
-        self.okveds = okveds
+        self.okveds = list(
+            chain(
+                OKVED_NOT_CLIENTS,
+                OKVED_NOT_CLIENTS,
+                OKVED_COLD_CLIENTS,
+                OKVED_WARM_CLIENTS
+            )
+        )
 
     def _connect(self, okved, page):
         with self._token as cell:
@@ -45,9 +48,8 @@ class ClientCHK:
 
     def get_data(self):
         data = []
-        okved_list = ["28.41.1"]
 
-        for okved in okved_list:
+        for okved in self.okveds:
             page = 1
             while True:
                 result = self._connect(okved, page)

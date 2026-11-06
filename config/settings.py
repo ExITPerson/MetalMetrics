@@ -18,7 +18,7 @@ COMPANY_TABLE_COLUMNS = {}
 # --- CHK ---
 API_URL = os.getenv('API_URL')
 TOKEN = os.getenv('TOKEN')
-CHK_PROXIES_RAW: str = Field(default='', alias='CHK_PROXIES')
+CHK_PROXIES_RAW = Field(default='', alias='CHK_PROXIES')
 CHK_SEARCH_URL=os.getenv('CHK_SEARCH_URL')
 CHK_COMPANY_URL=os.getenv('CHK_COMPANY_URL')
 
