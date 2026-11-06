@@ -70,7 +70,7 @@ class ProxyRotator:
             else:
                 ban = min(fails ** 2, self._max_ban_minutes)
 
-            self._banned_untils[proxy] == time.time() + ban * 60
+            self._banned_untils[proxy] = time.time() + ban * 60
 
     def report_success(self, proxy: str) -> None:
         with self._lock:

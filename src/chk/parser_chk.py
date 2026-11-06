@@ -8,7 +8,7 @@ from lib2to3.fixes.fix_input import context
 from playwright.sync_api import sync_playwright, BrowserContext
 
 from config.settings import CHK_PROXIES_RAW, CHK_SEARCH_URL
-from src.chk.proxy import ProxyRotator
+from src.chk.proxy import ProxyRotator, parse_proxy
 
 
 class SearchCHK:
@@ -22,6 +22,7 @@ class SearchCHK:
         self._retried = 0
 
     def __enter__(self):
+        """ Запуск """
         self._playwright = sync_playwright().start()
         self._browser = self._playwright.chromium.launch(
             headless=True,
@@ -38,6 +39,7 @@ class SearchCHK:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """ Закрытие контекстов, браузера, прекращение работы playwright """
         if self._browser:
             try:
                 contexts = self._browser.contexts
@@ -66,8 +68,9 @@ class SearchCHK:
                 pass
 
     def _create_context(self, proxy: str) -> BrowserContext:
+        """ Создание контекста """
         context = self._browser.new_context(
-            proxy=proxy,
+            proxy=parse_proxy(proxy),
             viewport={'width': 1920, 'height': 1080},
             user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
             locale='ru-RU',
@@ -86,6 +89,7 @@ class SearchCHK:
         return context
 
     def _context_close(self, context: BrowserContext) -> None:
+        """ Выход из контекста """
         try:
             context.close()
             time.sleep(3)
@@ -93,7 +97,8 @@ class SearchCHK:
         except Exception:
             pass
 
-    def _search_chk(self, query: str, retry_count: int = 0):
+    def search_chk(self, query: str, retry_count: int = 0) -> str | None:
+        """ Поиск ссылки на компанию по запросу 'query' """
         proxy = self._proxy_rotator.get_next_proxy()
         if not proxy:
             return None
@@ -128,7 +133,7 @@ class SearchCHK:
                     if retry_count < 2:
                         self._retried += 1
                         time.sleep(120)
-                        return self._search_chk(query, retry_count)
+                        return self.search_chk(query, retry_count)
                     return None
 
             content = page.content()
@@ -142,6 +147,7 @@ class SearchCHK:
                 try:
                     data = json.loads(pre_match.group(1))
                 except (JSONDecodeError, ValueError):
+
                     pass
 
             if data is None:
@@ -186,7 +192,7 @@ class SearchCHK:
                 self._retried += 1
                 time.sleep(60)
                 self._context_close(context)
-                return self._search_chk(query, retry_count + 1)
+                return self.search_chk(query, retry_count + 1)
 
             self._context_close(context)
             return None
