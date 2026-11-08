@@ -175,3 +175,4 @@ tmp/
 secrets/clickhouse_password.txt
 
 test.py
+/logs

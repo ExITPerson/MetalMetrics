@@ -44,7 +44,7 @@ def create_table(
     if partition_by:
         command.append(f'PARTITION BY {partition_by}')
     if primary_key:
-        command.append(f'PRIMARY_KEY ({primary_key})')
+        command.append(f'PRIMARY KEY ({primary_key})')
     command.append(f'ORDER BY ({orderby_sql})')
 
     total = '\n'.join(command)

@@ -84,3 +84,17 @@ OKVED_PRIORITY_MAP = {
     **{okved: 2 for okved in OKVED_COLD_CLIENTS},  # Приоритет 2: Холодные
     **{okved: 4 for okved in OKVED_NOT_CLIENTS},   # Приоритет 4: Не клиенты
 }
+
+COMPANY_COLUMNS = {
+    'inn':               'String',
+    'name':              'String',
+    'status':            'String',
+    'priority':          'Nullable(UInt8)',
+    'date_registration': 'Nullable(Date)',
+    'date_liquidation':  'Nullable(Date)',
+    'okved_id':          'LowCardinality(String)',
+    'okved_name':        'String',
+    'region_id':         'LowCardinality(String)',
+    'region_name':       'String',
+    'parsed_at':         'DateTime DEFAULT now()',
+}
